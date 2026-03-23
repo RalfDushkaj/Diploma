@@ -1,0 +1,111 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <title>Dashboard</title>
+</head>
+
+<body>
+  
+  <div class="d-flex">
+
+    <div class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
+        <h4 class="mb-4">HR System</h4>
+        <ul class="nav flex-column">
+            <li class="nav-item mb-2"><a href="#" class="nav-link text-white">Dashboard</a></li>
+            <li class="nav-item mb-2"><a href="{% url 'departments' %}" class="nav-link text-white">Departments</a></li>
+            <li class="nav-item"><a href="#" class="nav-link text-white">Reports</a></li>
+            <li class="nav-item"><a href="{% url 'logout' %}" class="nav-link text-white fw-bold fs-5">Log out</a></li>
+        </ul>
+    </div>
+   
+    <div class="flex-grow-1 p-4 bg-light">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-semibold">Dashboard Overview</h3>
+            <a href="{% url 'addEmployee' %}" class="btn btn-success">+ Add Employee</a>
+        </div>
+
+        <div class="row g-4 mb-4">
+           {% for emp in epm_data %}
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm p-3">
+                    <small class="text-muted">{{ emp.label }}</small>
+                    <h4 class="fw-bold">{{ emp.count }}</h4>
+                </div>
+            </div>
+           {% endfor %}
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm p-3">
+                    <h6 class="mb-3">Workforce Distribution</h6>
+                    <canvas id="workChart" width="100" height="100"></canvas>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm p-3">
+                    <h6 class="mb-3">Employees per Department</h6>
+                    <canvas id="deptChart" width="100" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+
+      
+         <h3 class="mb-4">Recent Activity</h3>
+        <div class="card border-0 shadow-sm p-3">
+           
+          <table class="table align-middle">
+           <tbody>
+           {% for emp in recent_employees %}
+            <tr>
+                <td>
+                    <span class="text-success">Employee added:</span>
+                    {{ emp.first_name }} {{ emp.last_name }}
+                </td>
+                <td>{{ emp.department }}</td>
+                <td>{{ emp.work_type }}</td>
+                <td>{{ emp.created_at|date:"M d, Y" }}</td>
+                <td>
+                    <a href="{% url 'employee' emp.id %}">
+                    <button class="btn btn-sm btn-outline-primary">
+                        View
+                    </button>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center text-muted">
+                    No employees yet
+                </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+         </table>
+        </div>
+
+    </div>
+  </div>
+<script>
+    const remoteCount = {{ remote|safe }};
+    const onsiteCount = {{ onsite|safe }};
+    const on_leaveCount = {{ on_leave|safe }};
+    const deptLabels = {{ dept_labels|safe }};  
+    const deptCounts = {{ dept_counts|safe }};
+</script>
+
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script> 
+  <script src="{% static 'js/chart.umd.js' %}"></script>  
+  <script src="{% static 'js/workChart.js' %}"></script>
+  <script src="{% static 'js/deptChart.js' %}"></script>
+
+</body>
+
+</html>

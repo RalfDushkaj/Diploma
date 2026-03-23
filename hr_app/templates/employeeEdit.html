@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <title>Edit Employee</title>
+</head>
+
+<body class="bg-light">
+
+<div class="container py-5 d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+ <div class="card shadow-sm w-100" style="max-width: 900px;">
+  <div class="card-body p-4">
+
+    <h4 class="mb-4 text-center">Edit Employee - {{ employee.first_name }} {{ employee.last_name }}</h4>
+
+      <form method="POST" enctype="multipart/form-data" action="{% url 'edit_employee' employee.pk %}">
+        {% csrf_token %}
+
+        <div class="row g-3">
+          {% for field in form %}
+            <div class="col-md-6">
+              <label class="form-label">{{ field.label }}</label>
+              {{ field }}
+              {% for error in field.errors %}
+                <div class="text-danger small">
+                  {{ error }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endfor %}
+
+          <!-- Photo Preview -->
+          {% if employee.photo %}
+          <div class="col-12">
+            <label class="form-label">Current Photo</label>
+            <div class="mb-2">
+              <img src="{{ employee.photo.url }}" width="120" class="rounded">
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- ID Document Preview -->
+          {% if employee.id_card %}
+          <div class="col-12">
+            <label class="form-label">Current ID Document</label>
+            <div class="mb-2">
+              <a href="{{ employee.id_card.url }}" target="_blank" class="btn btn-sm btn-outline-primary">View / Download</a>
+            </div>
+          </div>
+          {% endif %}
+
+        </div>
+
+        <div class="mt-4 text-center d-flex justify-content-center gap-2">
+          <button type="submit" class="btn btn-success px-4">Save Changes</button>
+          <a href="{% url 'employee' employee.pk %}" class="btn btn-secondary px-4">Cancel</a>
+        </div>
+      </form>
+
+  </div>
+ </div>
+</div>
+
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>
